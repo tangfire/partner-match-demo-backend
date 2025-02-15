@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: partner-match-demo-backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 8888.216
+    url: jdbc:mysql://localhost:3306/partner_match_db
+  # session 失效时间 86400秒 = 1天
+  session:
+    timeout: 86400
+    store-type: redis #session 的存储位置
+
+
+  data:
+    redis:
+      database: 3
+      host: localhost
+      port: 6379
+      timeout: 5000
+      password: 8888.216
+      redissonDb: 4
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # ?????????
+      logic-delete-value: 1 # ??????
+      logic-not-delete-value: 0 # ??????
+
+# springdoc-openapi项目配置
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    tags-sorter: alpha
+#    operations-sorter: alpha
+#  api-docs:
+#    path: /v3/api-docs
+#  group-configs:
+#    - group: 'default'
+#      paths-to-match: '/**'
+#      packages-to-scan: com.fire.partnermatchdemo.controller
+# knife4j的增强配置，不需要增强可以不配
+#knife4j:
+#  enable: true
+#  setting:
+#    language: zh_cn
+
