@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fire.partnermatchdemo.common.BaseResponse;
 import com.fire.partnermatchdemo.common.ErrorCode;
 import com.fire.partnermatchdemo.common.ResultUtils;
+import com.fire.partnermatchdemo.constant.UserConstant;
 import com.fire.partnermatchdemo.exception.BusinessException;
 import com.fire.partnermatchdemo.model.domain.Team;
 import com.fire.partnermatchdemo.model.domain.User;
-import com.fire.partnermatchdemo.model.dto.team.TeamAddRequest;
-import com.fire.partnermatchdemo.model.dto.team.TeamQueryRequest;
+import com.fire.partnermatchdemo.model.dto.team.*;
+import com.fire.partnermatchdemo.model.vo.team.TeamUserVO;
 import com.fire.partnermatchdemo.service.TeamService;
 import com.fire.partnermatchdemo.service.UserService;
 import jakarta.annotation.Resource;
@@ -57,12 +58,15 @@ public class TeamController {
 
 
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteTeam(@RequestBody long id) {
+    public BaseResponse<Boolean> deleteTeam(@RequestBody long id,HttpServletRequest request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        boolean res = teamService.removeById(id);
+        User loginUser = userService.getLoginUser(request);
+
+
+        boolean res = teamService.deleteTeam(id,loginUser);
 
         if (!res) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "删除失败");
@@ -75,14 +79,34 @@ public class TeamController {
     }
 
 
-    @PostMapping("/update")
-    public BaseResponse<Boolean> updateTeam(@RequestBody Team team) {
+//    @PostMapping("/update")
+//    public BaseResponse<Boolean> updateTeam(@RequestBody Team team) {
+//
+//        if (team == null) {
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//        }
+//
+//        boolean res = teamService.updateById(team);
+//
+//        if (!res) {
+//            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "更新失败");
+//        }
+//
+//        return ResultUtils.success(true);
+//
+//    }
 
-        if (team == null) {
+
+    @PostMapping("/update")
+    public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request) {
+
+        if (teamUpdateRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        boolean res = teamService.updateById(team);
+        User loginUser = userService.getLoginUser(request);
+
+        boolean res = teamService.updateTeam(teamUpdateRequest,loginUser);
 
         if (!res) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "更新失败");
@@ -108,18 +132,37 @@ public class TeamController {
 
     }
 
+//    @GetMapping("/list")
+//    public BaseResponse<List<Team>> getTeamList(TeamQueryRequest teamQueryRequest) {
+//
+//        if (teamQueryRequest == null) {
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//        }
+//        Team team = new Team();
+//
+//        BeanUtils.copyProperties(teamQueryRequest, team);
+//
+//        QueryWrapper<Team> queryWrapper = new QueryWrapper<>();
+//        List<Team> teamList = teamService.list(queryWrapper);
+//
+//        return ResultUtils.success(teamList);
+//
+//
+//    }
+
     @GetMapping("/list")
-    public BaseResponse<List<Team>> getTeamList(TeamQueryRequest teamQueryRequest) {
+    public BaseResponse<List<TeamUserVO>> getTeamList(TeamQueryRequest teamQueryRequest,HttpServletRequest request) {
 
         if (teamQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Team team = new Team();
 
-        BeanUtils.copyProperties(teamQueryRequest, team);
+        User loginUser = userService.getLoginUser(request);
 
-        QueryWrapper<Team> queryWrapper = new QueryWrapper<>();
-        List<Team> teamList = teamService.list(queryWrapper);
+        boolean isAdmin = userService.isAdmin(request);
+
+
+        List<TeamUserVO> teamList = teamService.listTeams(teamQueryRequest,isAdmin);
 
         return ResultUtils.success(teamList);
 
@@ -127,6 +170,7 @@ public class TeamController {
     }
 
 
+    // todo 查询分页
     @GetMapping("/list/page")
     public BaseResponse<Page<Team>> getTeamListByPage(TeamQueryRequest teamQueryRequest) {
 
@@ -147,6 +191,28 @@ public class TeamController {
         return ResultUtils.success(res);
 
 
+    }
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request) {
+        if (teamJoinRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        boolean res = teamService.joinTeam(teamJoinRequest,loginUser);
+        return ResultUtils.success(res);
+    }
+
+
+    @PostMapping("/quit")
+    public BaseResponse<Boolean> quitTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request) {
+        if(teamQuitRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        User loginUser = userService.getLoginUser(request);
+        boolean res = teamService.quitTeam(teamQuitRequest,loginUser);
+        return ResultUtils.success(res);
     }
 
 

@@ -14,7 +14,8 @@ public enum TeamStatusEnum {
 
     private String text;
 
-    public static TeamStatusEnum getTeamStatusEnum(Integer value) {
+
+    public static TeamStatusEnum getEnumByValue(Integer value) {
         if (value == null) {
             return null;
         }

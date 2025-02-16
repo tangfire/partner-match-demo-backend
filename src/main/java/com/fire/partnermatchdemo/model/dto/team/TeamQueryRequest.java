@@ -16,8 +16,15 @@ public class TeamQueryRequest extends PageRequest {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
+
+
+    /**
+     * 搜索关键词(同时对队伍名称和描述搜索)
+     */
+    private String searchText;
+
+
 
     /**
      * 队伍名称
