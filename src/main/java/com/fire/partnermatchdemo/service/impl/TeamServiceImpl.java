@@ -27,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Admin
@@ -163,10 +160,10 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 queryWrapper.eq("id", id);
             }
 
-//            List<Long> idList = teamQuery.getIdList();
-//            if (CollectionUtils.isNotEmpty(idList)) {
-//                queryWrapper.in("id", idList);
-//            }
+            List<Long> idList = teamQuery.getIdList();
+            if (CollectionUtils.isNotEmpty(idList)) {
+                queryWrapper.in("id", idList);
+            }
             String searchText = teamQuery.getSearchText();
             if (StringUtils.isNotBlank(searchText)) {
                 queryWrapper.and(qw -> qw.like("name", searchText).or().like("description", searchText));
@@ -417,7 +414,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         Team team = getTeamById(id);
         long teamId = team.getId();
         // 校验你是不是队伍的队长
-        if (team.getUserId() != loginUser.getId()) {
+        if (!Objects.equals(team.getUserId(), loginUser.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH, "无操作权限");
         }
         // 移除所有加入队伍的关联信息

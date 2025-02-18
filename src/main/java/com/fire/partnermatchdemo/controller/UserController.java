@@ -10,6 +10,7 @@ import com.fire.partnermatchdemo.exception.BusinessException;
 import com.fire.partnermatchdemo.model.domain.User;
 import com.fire.partnermatchdemo.model.dto.user.UserLoginRequest;
 import com.fire.partnermatchdemo.model.dto.user.UserRegisterRequest;
+import com.fire.partnermatchdemo.model.vo.user.UserVO;
 import com.fire.partnermatchdemo.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -146,6 +147,7 @@ public class UserController {
     }
 
 
+    // todo 推荐多个,未实现
     @GetMapping("/recommend")
     public BaseResponse<Page<User>> recommendUsers(int pageSize,long pageNum, HttpServletRequest request) {
 
@@ -244,6 +246,22 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+
+    /**
+     * 获取最匹配的用户
+     * @return
+     */
+    @GetMapping("/match")
+    public BaseResponse<List<User>> matchUsers(long num, HttpServletRequest request){
+        if (num <= 0 || num > 20){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        User user = userService.getLoginUser(request);
+
+        return ResultUtils.success(userService.matchUsers(num,user));
+
+    }
 
 
 

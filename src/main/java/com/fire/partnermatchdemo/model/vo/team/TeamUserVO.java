@@ -1,15 +1,10 @@
 package com.fire.partnermatchdemo.model.vo.team;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.fire.partnermatchdemo.model.domain.User;
 import com.fire.partnermatchdemo.model.vo.user.UserVO;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 队伍和用户信息封装类(脱敏)
@@ -71,6 +66,12 @@ public class TeamUserVO implements Serializable {
      * 创建人用户信息
      */
     UserVO createUser;
+
+
+    /**
+     * 是否已加入队伍
+     */
+    private boolean hasJoin = false;
 
 
 }

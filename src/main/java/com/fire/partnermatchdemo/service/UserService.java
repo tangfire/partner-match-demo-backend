@@ -3,6 +3,7 @@ package com.fire.partnermatchdemo.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fire.partnermatchdemo.constant.UserConstant;
 import com.fire.partnermatchdemo.model.domain.User;
+import com.fire.partnermatchdemo.model.vo.user.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -91,4 +92,5 @@ public interface UserService extends IService<User> {
 
 
 
+    List<User> matchUsers(long num, User loginUser);
 }

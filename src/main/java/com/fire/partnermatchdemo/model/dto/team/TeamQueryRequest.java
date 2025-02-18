@@ -1,10 +1,10 @@
 package com.fire.partnermatchdemo.model.dto.team;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fire.partnermatchdemo.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 队伍查询封装类
@@ -17,6 +17,12 @@ public class TeamQueryRequest extends PageRequest {
      * id
      */
     private Long id;
+
+
+    /**
+     * idList
+     */
+    private List<Long> idList;
 
 
     /**
